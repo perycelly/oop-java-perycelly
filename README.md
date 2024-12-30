@@ -1,155 +1,140 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/Ev761u1o)
-# OOP-JAVA(DCIT 201 - Graded Assignment)
-# Advanced Vehicle Rental Management System
+[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/public void rent(Customer customer, int days) {
+        // Logic for renting a car
+        System.out.println("Car rented to " + customer.getName() + " for " + days + " days.");
+    }
 
-## Assignment Objective
-Design a comprehensive Vehicle Rental Management System that demonstrates **ALL** Object-Oriented Programming (OOP) Principles:
-- Encapsulation
-- Inheritance
-- Polymorphism
-- Abstraction
-- Composition
-
-## Problem Domain: Vehicle Rental Management System
-
-### Core Requirements
-
-#### 1. Abstraction Principle
-Create an abstract base class `Vehicle` with the following abstract methods:
-- `calculateRentalCost(int days)`
-- `isAvailableForRental()`
-
-#### 2. Inheritance Hierarchy
-Implement concrete vehicle classes that inherit from `Vehicle`:
-- `Car` (extends Vehicle)
-- `Motorcycle` (extends Vehicle)
-- `Truck` (extends Vehicle)
-
-Each vehicle type must have unique rental characteristics:
-- Different base rental rates
-- Specific rental rules
-- Unique additional features
-
-#### 3. Encapsulation
-Each vehicle class must:
-- Use private fields for critical information
-- Provide public getter and setter methods
-- Implement input validation in setters
-- Protect sensitive data from direct modification
-
-#### 4. Polymorphism Implementation
-Create interfaces and method overriding:
-- `Rentable` interface with methods:
-  - `rent(Customer customer, int days)`
-  - `returnVehicle()`
-- Override methods in each vehicle class
-- Demonstrate method overloading and overriding
-
-#### 5. Composition
-Design supporting classes:
-- `Customer`
-- `RentalAgency`
-- `RentalTransaction`
-
-### Detailed Class Requirements
-
-#### Vehicle (Abstract Class)
-```java
-public abstract class Vehicle {
-    // Private encapsulated fields
-    private String vehicleId;
-    private String model;
-    private double baseRentalRate;
-    private boolean isAvailable;
-
-    // Constructors with validation
-    // Getters and setters
-    // Abstract methods for rental calculation
+    @Override
+    public void returnVehicle() {
+        // Logic for returning the car
+        System.out.println("Car returned.");
+    }
 }
-```
 
-#### Vehicle Specific Classes
-Each vehicle class must implement unique:
-- Rental cost calculations
-- Availability checks
-- Special features
+Method Overloading and Overriding:
 
-#### Customer Class
-- Manage customer rental history
-- Track current rentals
-- Implement rental eligibility checks
+- Method Overloading: We can overload methods such as rent() with different parameter types (e.g., rent a car for different durations).
+- Method Overriding: rent() and returnVehicle() will be overridden in the subclasses to provide specific implementations for each vehicle type.
 
-#### RentalAgency Class
-- Manage vehicle fleet
-- Process rentals
-- Generate reports
-- Implement complex business logic
+---
 
-### Bonus Challenges
-1. Implement a loyalty program using interfaces
-2. Create custom exceptions for rental scenarios
-3. Add a rating system for vehicles and customers
+### 5. Composition
 
-### Additional OOP Principles to Demonstrate
-- Use of `final` keyword for immutability
-- Static factory methods
-- Composition over inheritance
-- Interface-based design
+In this case, the RentalAgency class will manage a fleet of vehicles and have a composition relationship with the Vehicle class. We will also introduce a Customer class and RentalTransaction class to handle the rental transactions.
+public class RentalAgency {
+    private List<Vehicle> vehicleFleet;
 
-### Specific Implementation Guidelines
+    public RentalAgency() {
+        vehicleFleet = new ArrayList<>();
+    }
 
-#### Encapsulation Requirements
-- All fields must be private
-- Use constructor/setter validation
-- Provide controlled access through methods
+    public void addVehicle(Vehicle vehicle) {
+        vehicleFleet.add(vehicle);
+    }
 
-#### Inheritance Requirements
-- Create a meaningful inheritance hierarchy
-- Use `super()` for parent class initialization
-- Override `toString()`, `equals()`, and `hashCode()`
+    public void rentVehicle(Vehicle vehicle, Customer customer, int days) {
+        if (vehicle.isAvailableForRental()) {
+            vehicle.rent(customer, days);
+            vehicle.setAvailable(false);
+        } else {
+            System.out.println("Vehicle is not available.");
+        }
+    }
+}
 
-#### Polymorphism Requirements
-- Implement method overriding
-- Use interfaces for flexible design
-- Create methods that accept base class/interface types
+public class Customer {
+    private String name;
+    private List<RentalTransaction> rentalHistory;
 
-#### Abstraction Requirements
-- Use abstract classes and interfaces
-- Hide complex implementation details
-- Provide clean, intuitive public interfaces
+    public Customer(String name) {
+        this.name = name;
+        rentalHistory = new ArrayList<>();
+    }
 
-### Testing Requirements
-1. Unit test each class independently
-2. Test all possible scenarios
-3. Validate encapsulation
-4. Check inheritance and polymorphic behavior
-5. Verify abstraction implementations
+    public void addRentalTransaction(RentalTransaction transaction) {
+        rentalHistory.add(transaction);
+    }
+
+    public String getName() {
+        return name;
+    }
+}
+
+public class RentalTransaction {
+    private Vehicle vehicle;
+    private int daysRented;
+
+    public RentalTransaction(Vehicle vehicle, int daysRented) {
+        this.vehicle = vehicle;
+        this.daysRented = daysRented;
+    }
+
+    public double getRentalCost() {
+        return vehicle.calculateRentalCost(daysRented);
+    }
+}
+
+---
+
+### Additional Features (Bonus)
+
+1. Loyalty Program:  
+   An interface LoyaltyProgram can be implemented by the Customer class to calculate discounts based on rental history.
+
+2. Custom Exceptions:  
+   We can create exceptions like VehicleNotAvailableException or InvalidRentalDurationException.
+
+3. Vehicle Rating System:  
+   A Rating class can be introduced to manage ratings given by customers for vehicles, storing ratings and reviews.
+
+---
+
+### Complete Example of Inheritance, Polymorphism, and Abstraction
+public class Main {
+    public static void main(String[] args) {
+        // Create rental agency
+        RentalAgency agency = new RentalAgency();
+
+        // Create vehicles
+        Vehicle car1 = new Car("V001", "Toyota Corolla", 50, true);
+        Vehicle motorcycle1 = new Motorcycle("V002", "Harley Davidson", 30, true);
+        
+        // Add vehicles to the fleet
+        agency.addVehicle(car1);
+        agency.addVehicle(motorcycle1);
+        
+        // Create customer
+        Customer customer = new Customer("John Doe");
+        
+        // Rent vehicles
+        agency.rentVehicle(car1, customer, 5);
+        agency.rentVehicle(motorcycle1, customer, 2);
+    }
+}
+
+---
+
+### Testing with JUnit
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+public class VehicleTest {
+    
+    @Test
+    public void testCarRentalCost() {
+        Vehicle car = new Car("V001", "Toyota Corolla", 50, true);
+        assertEquals(250, car.calculateRentalCost(5));
+    }
+
+    @Test
+    public void testMotorcycleRentalCost() {
+        Vehicle motorcycle = new Motorcycle("V002", "Harley Davidson", 30, false);
+        assertEquals(60, motorcycle.calculateRentalCost(2));
+    }
+}
+
+---
 
 ### Evaluation Criteria
-- Correct implementation of OOP principles
-- Code quality and readability
-- Comprehensive test coverage
-- Innovative solution design
-- Error handling and validation
 
-### Submission Guidelines
-1. Create a well-structured Maven/Gradle project
-2. Use meaningful package structure
-3. Include comprehensive unit tests
-4. Write clean, documented code
-5. Follow Java naming conventions
+- OOP Principles: Correctly implementing all principles: abstraction, encapsulation, inheritance, polymorphism, and composition.
 
-## Recommended Tools
-- JDK 11+
-- Maven/Gradle
-- JUnit 5
-- Mockito (optional)
-
-## Grading Rubric
-- OOP Principles Implementation: 20%
-- Code Quality: 5%
-- Testing Coverage: 5%
-- Design Creativity: 5%
-- Documentation: 5%
-
-Good luck, and happy coding-Joe!
